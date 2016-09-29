@@ -1,38 +1,18 @@
 const express = require( 'express' );
 const { json } = require( 'body-parser' );
 const cors = require( 'cors' );
-const mongojs = require( 'mongojs' );
-const db = mongojs( 'ecommerce', ['products'] );
-
+const mongoose = require( 'mongoose' );
 const app = express();
 const port = 4000;
+const mongoUri = 'mongodb://localhost:27017/Products';
+
+
+
 app.use( json() );
 app.use( cors() );
 
-app.get( '/api/products', ( req, res ) => {
-  res.send("I am a random string in GET api/products");
-} );
-
-app.get( '/api/products/:id', ( req, res ) => {
-  res.send("I will GET you a present at api/products. It is a " + req.params.id);
-} );
-
-app.post( '/api/products', ( req, res ) => {
-  db.products.save( req.body, ( err, product ) => {
-      if( err ){
-        return res.status( 500 ).json( err );
-      }
-      return res.status( 201 ).json( product );
-  });
-});
-
-app.put( '/api/products/:id', ( req, res ) => {
-  res.send("Once I was a walrus but then I was PUT in api/products with " + req.params.id);
-} );
-
-app.delete( '/api/products/:id', ( req, res ) => {
-  res.send("I have deleted nothing, especially not " + req.params.id);
-} );
+mongoose.connect( mongoUri );
+mongoose.connection.once( 'open', () => console.log( `Connected to MongoDB at ${ mongoUri }` ) );
 
 
 
